@@ -1,5 +1,6 @@
 let showPath = false;
 let showHint = false;
+let won = false;
 
 function toggleShowPath() {
     showPath = !showPath;
@@ -171,14 +172,14 @@ function getShortestPath() {
         cell = queue[index];
         // start at ending cell maze[size-1][size-1], add predecessors back to 0,0
     }
-    console.log(queue);
+    // console.log(queue);
     // get solution; find index of goal, add parents backward to 0,0
-    let goalIndex = queue.length;
+    let goalIndex = queue.length - 1;
     for(x in queue) {
         if(queue[x].x == (size - 1) && queue[x].y == (size - 1)) goalIndex = x;
     }
 
-    console.log(`index (x,y): ${queue[goalIndex].x}, ${queue[goalIndex].y}`);
+    // console.log(`index (x,y): ${queue[goalIndex].x}, ${queue[goalIndex].y}`);
     shortestPath.push(queue[goalIndex]); //add goal to solution stack
     cell = queue[goalIndex];
 
@@ -353,42 +354,63 @@ function newMazeWithSize(newSize) {
     myChar.location = maze[0][0];
     scoreAdded = false;
     timer = 0;
-
+    won = false;
 }
 
 // player character movement control
 function moveCharacter(key, character) {
+    let moved = false;
+    if(won) { return; }
     if(key === 'ArrowDown') {
         if(maze[character.location.y][character.location.x].edges.b) {
             character.location = character.location.edges.b;
+            moved = true;
         }
     }
     if(key == 'ArrowUp') {
         if(maze[character.location.y][character.location.x].edges.t) {
             character.location = character.location.edges.t;
+            moved = true;
         }
     }
     if(key == 'ArrowRight') {
         if(maze[character.location.y][character.location.x].edges.r) {
             character.location = character.location.edges.r;
+            moved = true;
         }
     }
     if(key == 'ArrowLeft') {
         if(maze[character.location.y][character.location.x].edges.l) {
             character.location = character.location.edges.l;
+            moved = true;
         }
     }
     //breadcrumb flag
-    maze[character.location.x][character.location.y].visited = true;
+    if(moved) {
+        maze[character.location.x][character.location.y].visited = true;
+    }
 
-    //shortest path update
-    let top = shortestPath.pop();
-    // let second = shortestPath.pop();
-    if(myChar.location.x == top.x && myChar.location.y == top.y) {
-        null
+    //TODO: Move to a function, check for duplicates on path
+    updatePath();
+}
+
+
+//shortest path update based on player position
+function updatePath() {
+    // check for duplicate spots on array
+    // let map = {};
+    // for(item in shortestPath) {
+    //     if(map[shortestPath[item]]) shortestPath.splice(item, 1);
+    //     map[shortestPath[item]] = true;
+    // }
+    let top = shortestPath[shortestPath.length - 1];
+    let second = shortestPath[shortestPath.length - 2];
+    if(myChar.location.x == second.x && myChar.location.y == second.y) {
+        // console.log("removed:" + top);
+        shortestPath.pop();
     } else {
-        shortestPath.push(top);
-        shortestPath.push(myChar.location)
+        // shortestPath.push(top);
+        if(!shortestPath.includes(myChar.location)) shortestPath.push(myChar.location);
     }
 }
 
@@ -416,17 +438,18 @@ function processInput(elapsedTime) {
 function update(elapsedTime) {
     // update timer
     timer += elapsedTime;
-    // update current score
-    // update breadcrumb locations
-    // update highscores if game finished
-    if(myChar.location == maze[size - 1][size - 1] && !scoreAdded) {
-        let hiScores = document.getElementById('highscores');
-        let newScore = document.createElement('li');
-        newScore.innerHTML = (timer / 1000).toFixed(2);
-        hiScores.appendChild(newScore);
-        scoreAdded = true;
+    // keep player from moving if finished
+    if(myChar.location == maze[size - 1][size - 1]) {
+        won = true;
+        shortestPath = []; //clear last elemnts of hint
+        if(!scoreAdded) { //add score (time-based) if won
+            let hiScores = document.getElementById('highscores');
+            let newScore = document.createElement('li');
+            newScore.innerHTML = (timer / 1000).toFixed(2) + ` (${size}x${size})`;
+            hiScores.appendChild(newScore);
+            scoreAdded = true;
+        }
     }
-    // console.log("Does Nothing, nothing at all...");
 }
 
 function gameLoop(time) {

@@ -5,8 +5,11 @@ body {
 
 button {
   margin: 12px;
-  /* height: 64px;
-  width: 96px; */
+}
+
+canvas {
+  /* margin-left: 100px; */
+  padding: 6px 6px 6px 6px;
 }
 
 .game-header {
@@ -53,5 +56,6 @@ button {
 .maze-area {
   margin-left: 120px;
   padding: 0px 10px;
+  text-align: center;
   /* position: center; */
 }
