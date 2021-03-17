@@ -1,0 +1,40 @@
+body {
+  background-color: grey;
+}
+
+.sidebar {
+  height: 100%;
+  width: 120px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.sidebar li:hover {
+  color: #f1f1f1;
+  padding-bottom: 20px;
+}
+
+.sidebar li {
+  padding: 10px 2px 10px 2px;
+  color: white;
+  
+}
+
+.sidebar a {
+  color: white;
+}
+/* 
+li {
+  color: white;
+} */
+
+.resume {
+  margin-left: 120px;
+  padding: 0px 10px;
+
+}
