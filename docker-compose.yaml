@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.8'
 services:
   portfolio:
     image: portfolio:latest
@@ -6,9 +6,13 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
-    ports:
-      - "8080:8080"
+    networks: ["net", "common"]
     environment:
       - LETSENCRYPT_HOST
       - VIRTUAL_HOST
       - TRUSTED_PROXIES
+
+networks:
+  net:
+    external: true
+  common:
