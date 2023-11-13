@@ -8,13 +8,13 @@ services:
     restart: always
     ports:
       - 8080:80
-    # networks: ["net", "common"]
+    networks: ["net", "common"]
     environment:
       - LETSENCRYPT_HOST
       - VIRTUAL_HOST
       - TRUSTED_PROXIES
 
 networks:
-  # net:
-  #   external: true
+  net:
+    external: true
   common:
