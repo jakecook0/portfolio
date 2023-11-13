@@ -6,13 +6,15 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
-    networks: ["net", "common"]
+    ports:
+      - 8080:80
+    # networks: ["net", "common"]
     environment:
       - LETSENCRYPT_HOST
       - VIRTUAL_HOST
       - TRUSTED_PROXIES
 
 networks:
-  net:
-    external: true
+  # net:
+  #   external: true
   common:
